@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header>
+  <h1>Admin Dashboard</h1>
+</header>
+
+<main>
+  <h2>Messages Received</h2>
+  <ul id="messages-list"></ul>
+</main>
+
+<script>
+fetch("/messages")
+  .then(res => res.json())
+  .then(data => {
+    const list = document.getElementById("messages-list");
+    if (data.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "No messages yet.";
+      list.appendChild(li);
+    } else {
+      data.forEach(msg => {
+        const li = document.createElement("li");
+        li.textContent = `${msg.name} (${msg.email}): ${msg.message}`;
+        list.appendChild(li);
+      });
+    }
+  })
+  .catch(err => {
+    const list = document.getElementById("messages-list");
+    const li = document.createElement("li");
+    li.textContent = "Failed to load messages.";
+    list.appendChild(li);
+  });
+</script>
+
+</body>
+</html>
