@@ -4,6 +4,9 @@ const sqlite3 = require("sqlite3").verbose();
 const session = require("express-session");
 const path = require("path");
 
+// Load environment variables from .env when present (local development)
+require('dotenv').config();
+
 // ------------------------------
 // App + DB Setup
 // ------------------------------
