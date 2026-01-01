@@ -9,11 +9,53 @@
 
 <h2>Login</h2>
 
-<form action="/login" method="POST">
+<form id="loginForm" action="/login" method="POST">
   <input type="email" name="email" placeholder="Email" required>
   <input type="password" name="password" placeholder="Password" required>
   <button type="submit">Login</button>
 </form>
+
+<div id="error" aria-live="polite" style="color:crimson;margin-top:8px"></div>
+
+<script>
+  (function(){
+    const form = document.getElementById('loginForm');
+    const error = document.getElementById('error');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      error.textContent = '';
+      const data = {
+        email: form.email.value,
+        password: form.password.value
+      };
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
+        });
+        if (res.redirected) {
+          window.location = res.url;
+          return;
+        }
+        if (res.status === 401) {
+          const txt = await res.text();
+          error.textContent = txt || 'Invalid credentials';
+          return;
+        }
+        if (!res.ok) {
+          error.textContent = 'Login failed';
+          return;
+        }
+        // fallback: go to admin
+        window.location = '/admin';
+      } catch (err) {
+        error.textContent = 'Network error';
+      }
+    });
+  })();
+</script>
 
 </body>
 </html>
